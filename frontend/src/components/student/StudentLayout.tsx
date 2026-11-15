@@ -22,6 +22,9 @@ import {
 import { StudentUser, GamificationProfile } from '../../types';
 
 export type StudentNavigationPage =
+  | 'landing'
+  | 'about'
+  | 'contact'
   | 'sign_in'
   | 'register'
   | 'dashboard'
@@ -100,6 +103,7 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
   };
 
   const navItems = [
+    { id: 'landing' as StudentNavigationPage, label: 'Home', icon: Sparkles },
     { id: 'dashboard' as StudentNavigationPage, label: 'Dashboard', icon: LayoutDashboard },
     { id: 'my_learning' as StudentNavigationPage, label: 'My Learning', icon: BookOpen },
     { id: 'catalog' as StudentNavigationPage, label: 'Explore Courses', icon: Compass },
@@ -114,33 +118,39 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] dark:bg-[#0F1218] text-[#1F2937] dark:text-[#F3F4F6] flex">
+    <div className="min-h-screen bg-[#03050C] text-[#F8FAFC] flex">
       {/* Mobile Drawer Backdrop */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden backdrop-blur-xs"
+          className="fixed inset-0 z-40 bg-black/70 lg:hidden backdrop-blur-xs"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Desktop & Mobile Sidebar (248px) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-62 bg-white dark:bg-[#181C24] border-r border-[#D9DEE7] dark:border-[#2D3545] flex flex-col justify-between transition-transform duration-200 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-62 bg-[#050711] border-r border-white/10 flex flex-col justify-between transition-transform duration-200 lg:translate-x-0 ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         {/* Brand & Portal Label */}
         <div>
-          <div className="h-16 px-5 border-b border-[#D9DEE7] dark:border-[#2D3545] flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
-                L
+          <div className="h-16 px-5 border-b border-white/10 flex items-center justify-between">
+            <div
+              className="flex items-center gap-2.5 cursor-pointer"
+              onClick={() => handleNavClick('landing')}
+              title="Return to Home / Overview"
+            >
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-cyan-400 text-white flex items-center justify-center font-bold text-base shadow-sm shadow-cyan-500/25">
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 0 0 8 20C19 20 22 3 22 3c-1 2-8 2.25-13 3.25S2 11.5 2 13.5s1.75 3.75 1.75 3.75C7 8 17 8 17 8Z" />
+                </svg>
               </div>
               <div>
-                <span className="font-bold text-base text-gray-900 dark:text-white tracking-tight">
+                <span className="font-monument text-sm font-bold text-white tracking-tight">
                   Learnova
                 </span>
-                <span className="block text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">
+                <span className="block text-[10px] font-semibold text-cyan-400 uppercase tracking-wider">
                   Student Portal
                 </span>
               </div>
@@ -148,7 +158,7 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="lg:hidden p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded"
+              className="lg:hidden p-1 text-[#64748B] hover:text-white rounded"
               aria-label="Close sidebar menu"
             >
               <X className="w-5 h-5" />
@@ -165,13 +175,13 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
                   key={item.id}
                   type="button"
                   onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-[#E8EEFF] dark:bg-indigo-950/40 text-[#2646B8] dark:text-indigo-300 font-semibold'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'bg-cyan-500/15 text-cyan-300 font-semibold border border-cyan-400/30 shadow-[0_0_15px_rgba(34,211,238,0.08)]'
+                      : 'text-[#94A3B8] hover:bg-white/5 hover:text-white'
                   }`}
                 >
-                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-[#2646B8] dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400'}`} />
+                  <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-cyan-400' : 'text-[#64748B]'}`} />
                   <span>{item.label}</span>
                 </button>
               );
@@ -180,21 +190,21 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
         </div>
 
         {/* Sidebar Footer: Portal Switcher & Profile Quick Menu */}
-        <div className="p-3 border-t border-[#D9DEE7] dark:border-[#2D3545] space-y-2">
+        <div className="p-3 border-t border-white/8 space-y-2">
           {/* Portal Switcher Buttons */}
           <div className="space-y-1">
             {onSwitchPortal && (
               <button
                 type="button"
                 onClick={onSwitchPortal}
-                className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 transition cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold text-[#94A3B8] bg-white/5 hover:bg-white/8 border border-white/8 transition cursor-pointer"
                 title="Switch to Teacher Portal"
               >
                 <div className="flex items-center gap-2">
-                  <ArrowRightLeft className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                  <ArrowRightLeft className="w-3.5 h-3.5 text-[#3B82F6]" />
                   <span>Teacher Portal</span>
                 </div>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 font-medium">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#2563EB]/15 text-[#3B82F6] font-medium">
                   Staff
                 </span>
               </button>
@@ -204,14 +214,14 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
               <button
                 type="button"
                 onClick={onSwitchToAdmin}
-                className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-800/60 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700 transition cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-1.5 rounded-xl text-xs font-semibold text-[#94A3B8] bg-white/5 hover:bg-white/8 border border-white/8 transition cursor-pointer"
                 title="Switch to Administrator Portal"
               >
                 <div className="flex items-center gap-2">
-                  <ArrowRightLeft className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400" />
+                  <ArrowRightLeft className="w-3.5 h-3.5 text-purple-400" />
                   <span>Admin Portal</span>
                 </div>
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 font-medium">
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-400 font-medium">
                   Admin
                 </span>
               </button>
@@ -219,21 +229,21 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
           </div>
 
           {/* Student Profile Row */}
-          <div className="p-2.5 rounded-xl bg-gray-50/70 dark:bg-[#1C212B] border border-gray-200 dark:border-gray-800 flex items-center justify-between">
+          <div className="p-2.5 rounded-xl bg-white/5 border border-white/8 flex items-center justify-between">
             <button
               type="button"
               onClick={() => handleNavClick('profile')}
               className="flex items-center gap-2.5 min-w-0 text-left hover:opacity-80 transition"
               title="View profile and settings"
             >
-              <div className="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#2563EB] text-white font-bold text-xs flex items-center justify-center shrink-0">
                 {currentUser.avatar || currentUser.name.slice(0, 2).toUpperCase()}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                <p className="text-xs font-bold text-white truncate">
                   {currentUser.name}
                 </p>
-                <p className="text-[11px] text-gray-500 dark:text-gray-400 truncate">
+                <p className="text-[11px] text-[#64748B] truncate">
                   Level {gamificationProfile.level} • {gamificationProfile.xp} XP
                 </p>
               </div>
@@ -243,7 +253,7 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
               <button
                 type="button"
                 onClick={onSignOut}
-                className="p-1 text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 rounded transition"
+                className="p-1 text-[#64748B] hover:text-rose-400 rounded transition"
                 title="Sign out"
                 aria-label="Sign out"
               >
@@ -257,40 +267,40 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
       {/* Main App Container */}
       <div className="flex-1 lg:pl-62 flex flex-col min-h-screen">
         {/* Global Student Header */}
-        <header className="sticky top-0 z-30 h-16 bg-white dark:bg-[#181C24] border-b border-[#D9DEE7] dark:border-[#2D3545] px-4 sm:px-6 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-30 h-16 bg-[#050711]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-6 flex items-center justify-between gap-4">
           {/* Left: Mobile Menu Toggle & Breadcrumbs */}
           <div className="flex items-center gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="lg:hidden p-2 text-[#94A3B8] rounded-lg hover:bg-white/5"
               aria-label="Open sidebar navigation"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             {/* Breadcrumb Path */}
-            <nav className="flex items-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate" aria-label="Breadcrumb">
+            <nav className="flex items-center text-xs sm:text-sm text-[#64748B] truncate" aria-label="Breadcrumb">
               <button
                 type="button"
                 onClick={() => onNavigate('dashboard')}
-                className="hover:text-indigo-600 dark:hover:text-indigo-400 font-medium"
+                className="hover:text-cyan-400 font-medium"
               >
                 Learnova
               </button>
               {breadcrumbs.map((crumb, idx) => (
                 <React.Fragment key={idx}>
-                  <ChevronRight className="w-3.5 h-3.5 mx-1 text-gray-400 shrink-0" />
+                  <ChevronRight className="w-3.5 h-3.5 mx-1 text-[#475569] shrink-0" />
                   {crumb.page ? (
                     <button
                       type="button"
                       onClick={() => onNavigate(crumb.page!, crumb.params)}
-                      className="hover:text-indigo-600 dark:hover:text-indigo-400 truncate"
+                      className="hover:text-cyan-400 truncate"
                     >
                       {crumb.label}
                     </button>
                   ) : (
-                    <span className="font-semibold text-gray-800 dark:text-gray-200 truncate">
+                    <span className="font-semibold text-white truncate">
                       {crumb.label}
                     </span>
                   )}
@@ -305,16 +315,16 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('xp_history')}
-              className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition text-xs font-bold"
+              className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-cyan-950/30 border border-cyan-400/25 text-cyan-200 hover:bg-cyan-950/50 transition text-xs font-bold shadow-[0_0_12px_rgba(34,211,238,0.1)]"
               title="View XP Activity History"
             >
-              <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+              <span className="flex items-center gap-1 text-amber-400">
                 <Flame className="w-3.5 h-3.5 fill-current" />
                 <span>{gamificationProfile.streakDays}d</span>
               </span>
-              <span className="h-3 w-px bg-amber-300 dark:bg-amber-700" />
+              <span className="h-3 w-px bg-white/15" />
               <span className="flex items-center gap-1">
-                <Zap className="w-3.5 h-3.5 fill-current text-indigo-600 dark:text-indigo-400" />
+                <Zap className="w-3.5 h-3.5 fill-current text-cyan-400" />
                 <span>{gamificationProfile.xp} XP</span>
               </span>
             </button>
@@ -324,32 +334,32 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
               <button
                 type="button"
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 relative transition"
+                className="p-2 text-[#94A3B8] hover:text-white rounded-lg hover:bg-white/5 relative transition"
                 aria-label="Notifications"
                 aria-expanded={showNotifications}
               >
                 <Bell className="w-4 h-4" />
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-600 ring-2 ring-white dark:ring-[#181C24]" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-cyan-400 ring-2 ring-[#03050C] shadow-[0_0_8px_#22d3ee]" />
               </button>
 
               {showNotifications && (
-                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-[#181C24] border border-[#D9DEE7] dark:border-[#2D3545] rounded-2xl shadow-xl p-3 z-50 text-xs">
-                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-gray-100 dark:border-gray-800 font-bold text-gray-900 dark:text-white">
+                <div className="absolute right-0 mt-2 w-80 bg-[#0A0F1D] border border-white/10 rounded-2xl shadow-xl p-3 z-50 text-xs">
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-white/8 font-bold text-white">
                     <span>Recent Updates</span>
-                    <span className="text-[10px] text-indigo-600 font-medium">3 unread</span>
+                    <span className="text-[10px] text-[#3B82F6] font-medium">3 unread</span>
                   </div>
                   <div className="space-y-2">
-                    <div className="p-2 rounded-lg bg-indigo-50/60 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50">
-                      <p className="font-semibold text-indigo-900 dark:text-indigo-200">Daily Streak Bonus</p>
-                      <p className="text-gray-600 dark:text-gray-300">You earned +70 XP for studying 4 days in a row!</p>
+                    <div className="p-2 rounded-lg bg-[#2563EB]/10 border border-[#2563EB]/20">
+                      <p className="font-semibold text-[#93C5FD]">Daily Streak Bonus</p>
+                      <p className="text-[#94A3B8]">You earned +70 XP for studying 4 days in a row!</p>
                     </div>
-                    <div className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700">
-                      <p className="font-semibold text-gray-800 dark:text-gray-200">Diagnostic Calibrated</p>
-                      <p className="text-gray-600 dark:text-gray-300">Pre-Course Python Proficiency calibrated baseline mastery.</p>
+                    <div className="p-2 rounded-lg bg-white/5 border border-white/8">
+                      <p className="font-semibold text-white">Diagnostic Calibrated</p>
+                      <p className="text-[#94A3B8]">Pre-Course Python Proficiency calibrated baseline mastery.</p>
                     </div>
-                    <div className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700">
-                      <p className="font-semibold text-gray-800 dark:text-gray-200">New Achievement Badge</p>
-                      <p className="text-gray-600 dark:text-gray-300">Unlocked 'Streak Sentinel' on your profile.</p>
+                    <div className="p-2 rounded-lg bg-white/5 border border-white/8">
+                      <p className="font-semibold text-white">New Achievement Badge</p>
+                      <p className="text-[#94A3B8]">Unlocked 'Streak Sentinel' on your profile.</p>
                     </div>
                   </div>
                 </div>
@@ -360,7 +370,7 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+              className="p-2 text-[#94A3B8] hover:text-white rounded-lg hover:bg-white/5 transition"
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
@@ -371,17 +381,17 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
               <button
                 type="button"
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
-                className="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center ring-2 ring-transparent hover:ring-indigo-300 dark:hover:ring-indigo-700 transition"
+                className="w-8 h-8 rounded-full bg-[#2563EB] text-white font-bold text-xs flex items-center justify-center ring-2 ring-transparent hover:ring-[#3B82F6]/50 transition"
                 aria-label="User menu"
               >
                 {currentUser.avatar || currentUser.name.slice(0, 2).toUpperCase()}
               </button>
 
               {showProfileMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-[#181C24] border border-[#D9DEE7] dark:border-[#2D3545] rounded-xl shadow-xl py-1 z-50 text-xs">
-                  <div className="px-3 py-2 border-b border-gray-100 dark:border-gray-800">
-                    <p className="font-bold text-gray-900 dark:text-white truncate">{currentUser.name}</p>
-                    <p className="text-gray-500 truncate">{currentUser.email}</p>
+                <div className="absolute right-0 mt-2 w-48 bg-[#0A0F1D] border border-white/10 rounded-xl shadow-xl py-1 z-50 text-xs">
+                  <div className="px-3 py-2 border-b border-white/8">
+                    <p className="font-bold text-white truncate">{currentUser.name}</p>
+                    <p className="text-[#64748B] truncate">{currentUser.email}</p>
                   </div>
                   <button
                     type="button"
@@ -389,9 +399,9 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
                       setShowProfileMenu(false);
                       onNavigate('profile');
                     }}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 hover:bg-white/5 flex items-center gap-2 text-[#94A3B8] hover:text-white"
                   >
-                    <User className="w-3.5 h-3.5 text-gray-500" />
+                    <User className="w-3.5 h-3.5 text-[#64748B]" />
                     <span>Profile & Settings</span>
                   </button>
                   <button
@@ -400,9 +410,9 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
                       setShowProfileMenu(false);
                       onNavigate('xp_history');
                     }}
-                    className="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center gap-2"
+                    className="w-full text-left px-3 py-2 hover:bg-white/5 flex items-center gap-2 text-[#94A3B8] hover:text-white"
                   >
-                    <Zap className="w-3.5 h-3.5 text-amber-500" />
+                    <Zap className="w-3.5 h-3.5 text-[#3B82F6]" />
                     <span>XP Activity History</span>
                   </button>
                   {onSignOut && (
@@ -412,7 +422,7 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
                         setShowProfileMenu(false);
                         onSignOut();
                       }}
-                      className="w-full text-left px-3 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 flex items-center gap-2 border-t border-gray-100 dark:border-gray-800"
+                      className="w-full text-left px-3 py-2 hover:bg-rose-950/30 text-rose-400 flex items-center gap-2 border-t border-white/8"
                     >
                       <LogOut className="w-3.5 h-3.5 text-rose-500" />
                       <span>Sign Out</span>
@@ -432,10 +442,10 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
                 key={toast.id}
                 className={`p-3.5 rounded-xl shadow-lg border text-sm font-medium flex items-center justify-between gap-3 pointer-events-auto transition-all ${
                   toast.type === 'success'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/90 border-emerald-300 dark:border-emerald-700 text-emerald-900 dark:text-emerald-100'
+                    ? 'bg-emerald-950/90 border-emerald-700 text-emerald-100'
                     : toast.type === 'error'
-                    ? 'bg-rose-50 dark:bg-rose-950/90 border-rose-300 dark:border-rose-700 text-rose-900 dark:text-rose-100'
-                    : 'bg-blue-50 dark:bg-blue-950/90 border-blue-300 dark:border-blue-700 text-blue-900 dark:text-blue-100'
+                    ? 'bg-rose-950/90 border-rose-700 text-rose-100'
+                    : 'bg-blue-950/90 border-blue-700 text-blue-100'
                 }`}
               >
                 <span>{toast.message}</span>
@@ -453,8 +463,11 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
           </div>
         )}
 
-        {/* Page Content Outlet */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        {/* Page Content Outlet with Smooth Page Transition Key */}
+        <main
+          key={currentPage}
+          className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto animate-fade-in"
+        >
           {children}
         </main>
       </div>

@@ -6,11 +6,13 @@ import { authApi, mapUserResponseToStudentUser } from '../../services/api/authAp
 interface CreateAccountPageProps {
   onRegisterSuccess: (user: StudentUser) => void;
   onNavigateToSignIn: () => void;
+  onNavigateToLanding?: () => void;
 }
 
 export const CreateAccountPage: React.FC<CreateAccountPageProps> = ({
   onRegisterSuccess,
   onNavigateToSignIn,
+  onNavigateToLanding,
 }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -29,125 +31,140 @@ export const CreateAccountPage: React.FC<CreateAccountPageProps> = ({
       return;
     }
 
-    if (password.length < 8) {
-      setError('Password must contain at least 8 characters.');
+    if (password !== confirmPassword) {
+      setError('Passwords do not match. Please verify your entries.');
       return;
     }
 
-    if (password !== confirmPassword) {
-      setError('Passwords do not match. Please re-enter your password.');
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters in length.');
       return;
     }
 
     setIsSubmitting(true);
     try {
       const response = await authApi.register({
-        email: email.trim().toLowerCase(),
+        email: email.trim(),
         password,
         full_name: fullName.trim(),
       });
 
       if (response.user) {
-        const studentUser = mapUserResponseToStudentUser(response.user);
-        onRegisterSuccess(studentUser);
+        onRegisterSuccess(mapUserResponseToStudentUser(response.user));
       } else {
         const me = await authApi.getMe();
         onRegisterSuccess(mapUserResponseToStudentUser(me));
       }
     } catch (err: any) {
-      setError(err.message || 'Registration failed. Please check your details.');
+      setError(err.message || 'Registration failed. Please try a different email or try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] dark:bg-[#0F1218] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-indigo-600 text-white font-bold text-xl shadow-md mb-4">
-          L
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
-          Create Student Account
-        </h1>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Join Learnova to start your personalized, adaptive learning journey
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#020512] flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 selection:bg-[#2563EB]/40 selection:text-white relative">
+      {/* Ambient Cobalt Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-[#021A7A]/40 rounded-full blur-[130px] pointer-events-none" />
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <div className="bg-white dark:bg-[#181C24] py-8 px-6 sm:px-8 shadow-sm border border-[#D9DEE7] dark:border-[#2D3545] rounded-2xl">
+      {onNavigateToLanding && (
+        <div className="sm:mx-auto sm:w-full sm:max-w-md mb-3 text-left relative z-10">
+          <button
+            type="button"
+            onClick={onNavigateToLanding}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#94A3B8] hover:text-white transition-colors cursor-pointer"
+          >
+            ← Back to Overview
+          </button>
+        </div>
+      )}
+
+      {/* Main Form Card */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 animate-fade-in">
+        <div className="bg-[#080C18] text-[#F8FAFC] py-8 px-6 sm:px-10 shadow-2xl border border-white/10 rounded-[32px]">
+          <div className="text-center mb-6">
+            <span className="font-monument text-xs font-bold tracking-[0.3em] uppercase text-[#3B82F6] block mb-2">
+              Learnova
+            </span>
+            <h1 className="text-2xl sm:text-3xl font-editorial font-normal tracking-tight text-white">
+              Create an Account
+            </h1>
+            <p className="mt-1.5 text-xs text-[#94A3B8]">
+              Join Learnova to unlock personalized mastery & diagnostic learning
+            </p>
+          </div>
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
-              <div className="p-3.5 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-medium">
+              <div className="p-3 rounded-2xl bg-rose-950/60 border border-rose-800 text-rose-300 text-xs font-medium">
                 {error}
               </div>
             )}
 
-            {/* Name */}
+            {/* Full Name */}
             <div>
-              <label htmlFor="reg-name" className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="fullName" className="block text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1">
                 Full Name
               </label>
-              <div className="relative rounded-xl shadow-2xs">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+              <div className="relative rounded-2xl">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
                   <User className="w-4 h-4" />
                 </div>
                 <input
-                  id="reg-name"
+                  id="fullName"
                   type="text"
                   required
+                  placeholder="Alex Rivera"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g. Jordan Reed"
-                  className="block w-full pl-10 pr-3.5 py-2.5 text-sm rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1E232E] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="block w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm rounded-2xl border border-white/10 bg-white/5 text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div>
-              <label htmlFor="reg-email" className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1">
-                University Email Address
+              <label htmlFor="regEmail" className="block text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1">
+                University Email
               </label>
-              <div className="relative rounded-xl shadow-2xs">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+              <div className="relative rounded-2xl">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
                   <Mail className="w-4 h-4" />
                 </div>
                 <input
-                  id="reg-email"
+                  id="regEmail"
                   type="email"
                   required
+                  placeholder="alex.rivera@university.edu"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="jordan@learnova.edu"
-                  className="block w-full pl-10 pr-3.5 py-2.5 text-sm rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1E232E] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="block w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm rounded-2xl border border-white/10 bg-white/5 text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label htmlFor="reg-pass" className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="regPassword" className="block text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1">
                 Password
               </label>
-              <div className="relative rounded-xl shadow-2xs">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+              <div className="relative rounded-2xl">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
-                  id="reg-pass"
+                  id="regPassword"
                   type={showPassword ? 'text' : 'password'}
                   required
+                  placeholder="At least 8 characters"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="At least 8 characters"
-                  className="block w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1E232E] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="block w-full pl-10 pr-10 py-2.5 text-xs sm:text-sm rounded-2xl border border-white/10 bg-white/5 text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-stone-400 hover:text-white"
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -157,55 +174,59 @@ export const CreateAccountPage: React.FC<CreateAccountPageProps> = ({
 
             {/* Confirm Password */}
             <div>
-              <label htmlFor="reg-confirm" className="block text-xs font-semibold uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-1">
+              <label htmlFor="confirmPassword" className="block text-[11px] font-semibold uppercase tracking-wider text-[#94A3B8] mb-1">
                 Confirm Password
               </label>
-              <div className="relative rounded-xl shadow-2xs">
-                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400">
+              <div className="relative rounded-2xl">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-stone-400">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
-                  id="reg-confirm"
+                  id="confirmPassword"
                   type={showPassword ? 'text' : 'password'}
                   required
+                  placeholder="Re-enter password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Repeat your password"
-                  className="block w-full pl-10 pr-3.5 py-2.5 text-sm rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#1E232E] text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="block w-full pl-10 pr-4 py-2.5 text-xs sm:text-sm rounded-2xl border border-white/10 bg-white/5 text-white placeholder-stone-500 focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-transparent transition-all"
                 />
               </div>
             </div>
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full mt-4 py-2.5 px-4 rounded-xl font-semibold text-sm text-white bg-indigo-600 hover:bg-indigo-700 transition flex items-center justify-center gap-2 shadow-xs cursor-pointer"
-            >
-              {isSubmitting ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Creating Account...</span>
-                </>
-              ) : (
-                <>
-                  <span>Register & Begin Learning</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 px-4 rounded-full font-semibold text-xs uppercase tracking-wider text-white bg-[#2563EB] hover:bg-[#1D4ED8] transition flex items-center justify-center gap-2 shadow-lg shadow-blue-600/30 cursor-pointer"
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <span>Creating account...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Complete Registration</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
           </form>
         </div>
 
-        <div className="mt-6 text-center text-xs text-gray-600 dark:text-gray-400">
-          Already have an account?{' '}
-          <button
-            type="button"
-            onClick={onNavigateToSignIn}
-            className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
-          >
-            Sign in
-          </button>
+        {/* Footer Navigation */}
+        <div className="mt-6 text-center text-xs">
+          <p className="text-[#94A3B8]">
+            Already have an account?{' '}
+            <button
+              type="button"
+              onClick={onNavigateToSignIn}
+              className="font-bold text-white hover:underline cursor-pointer"
+            >
+              Sign in instead
+            </button>
+          </p>
         </div>
       </div>
     </div>

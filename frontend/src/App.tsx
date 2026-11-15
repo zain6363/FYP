@@ -77,6 +77,9 @@ import {
   StudentLayout,
   StudentNavigationPage,
 } from './components/student/StudentLayout';
+import { LandingHeroPage } from './pages/student/LandingHeroPage';
+import { AboutPage } from './pages/student/AboutPage';
+import { ContactPage } from './pages/student/ContactPage';
 import { SignInPage } from './pages/student/SignInPage';
 import { CreateAccountPage } from './pages/student/CreateAccountPage';
 import { StudentDashboardPage } from './pages/student/StudentDashboardPage';
@@ -125,7 +128,7 @@ export default function App() {
 
   // Student State
   const [currentStudent, setCurrentStudent] = useState<StudentUser | null>(() => storage.getStudentUser());
-  const [studentPage, setStudentPage] = useState<StudentNavigationPage>('dashboard');
+  const [studentPage, setStudentPage] = useState<StudentNavigationPage>('landing');
   const [studentNavParams, setStudentNavParams] = useState<Record<string, string>>({});
   const [latestResult, setLatestResult] = useState<StudentAssessmentResult | null>(null);
 
@@ -892,6 +895,10 @@ export default function App() {
       list.push({ label: 'Leaderboard' });
     } else if (studentPage === 'profile') {
       list.push({ label: 'Profile & Settings' });
+    } else if (studentPage === 'about') {
+      list.push({ label: 'About Us' });
+    } else if (studentPage === 'contact') {
+      list.push({ label: 'Contact Us' });
     }
 
     return list;
@@ -901,12 +908,14 @@ export default function App() {
   // VIEW ROUTING: STUDENT PORTAL
   // =========================================================================
   if (portalMode === 'student') {
-    // If not authenticated or on auth screens
-    if (!currentStudent || studentPage === 'sign_in') {
+    // Landing Hero Page
+    if (studentPage === 'landing') {
       return (
-        <SignInPage
-          onSignInSuccess={handleStudentSignInSuccess}
-          onNavigateToRegister={() => setStudentPage('register')}
+        <LandingHeroPage
+          courses={courses}
+          enrollments={enrollments}
+          currentStudent={currentStudent}
+          onNavigate={(page, params) => handleStudentNavigate(page, params)}
           onSwitchToTeacher={() => {
             setPortalMode('teacher');
             refreshTeacherCourseData();
@@ -919,11 +928,68 @@ export default function App() {
       );
     }
 
+    // Public About Us Page
+    if (studentPage === 'about') {
+      return (
+        <AboutPage
+          currentStudent={currentStudent}
+          onNavigate={(page, params) => handleStudentNavigate(page, params)}
+          onSwitchToTeacher={() => {
+            setPortalMode('teacher');
+            refreshTeacherCourseData();
+          }}
+          onSwitchToAdmin={() => {
+            setPortalMode('admin');
+            refreshAdminData();
+          }}
+        />
+      );
+    }
+
+    // Public Contact Us Page
+    if (studentPage === 'contact') {
+      return (
+        <ContactPage
+          currentStudent={currentStudent}
+          onNavigate={(page, params) => handleStudentNavigate(page, params)}
+          onSwitchToTeacher={() => {
+            setPortalMode('teacher');
+            refreshTeacherCourseData();
+          }}
+          onSwitchToAdmin={() => {
+            setPortalMode('admin');
+            refreshAdminData();
+          }}
+        />
+      );
+    }
+
+    // Registration screen
     if (studentPage === 'register') {
       return (
         <CreateAccountPage
           onRegisterSuccess={handleStudentSignInSuccess}
           onNavigateToSignIn={() => setStudentPage('sign_in')}
+          onNavigateToLanding={() => setStudentPage('landing')}
+        />
+      );
+    }
+
+    // If not authenticated or on auth screens
+    if (!currentStudent || studentPage === 'sign_in') {
+      return (
+        <SignInPage
+          onSignInSuccess={handleStudentSignInSuccess}
+          onNavigateToRegister={() => setStudentPage('register')}
+          onNavigateToLanding={() => setStudentPage('landing')}
+          onSwitchToTeacher={() => {
+            setPortalMode('teacher');
+            refreshTeacherCourseData();
+          }}
+          onSwitchToAdmin={() => {
+            setPortalMode('admin');
+            refreshAdminData();
+          }}
         />
       );
     }

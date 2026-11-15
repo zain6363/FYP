@@ -64,31 +64,31 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
   const activeLeaderboard = leaderboardData.length > 0 ? leaderboardData : initialLeaderboard;
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-4xl mx-auto animate-fade-in">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight flex items-center gap-2.5">
-          <Trophy className="w-7 h-7 text-amber-500" />
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight flex items-center gap-2.5">
+          <Trophy className="w-7 h-7 text-orange-400" />
           <span>Academic Leaderboard</span>
         </h1>
-        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
+        <p className="mt-1 text-sm text-[#94A3B8]">
           Rankings are based strictly on verified XP earned through lesson completions, diagnostics, and exams.
         </p>
       </div>
 
       {/* Privacy Opt-In Status Banner */}
-      <div className="p-4 rounded-xl bg-gray-50 dark:bg-[#1C212B] border border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+      <div className="p-4 rounded-xl bg-white/5 border border-white/8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-2.5">
           {optedIn ? (
-            <Eye className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <Eye className="w-4 h-4 text-emerald-400" />
           ) : (
-            <EyeOff className="w-4 h-4 text-gray-500" />
+            <EyeOff className="w-4 h-4 text-[#64748B]" />
           )}
           <div>
-            <span className="font-bold text-gray-900 dark:text-white">
+            <span className="font-bold text-white">
               {optedIn ? 'Your profile is publicly ranked.' : 'You are currently hidden from public rankings.'}
             </span>
-            <p className="text-[11px] text-gray-500 dark:text-gray-400">
+            <p className="text-[11px] text-[#64748B]">
               {optedIn
                 ? 'Your pseudonym and badges are visible to course peers.'
                 : 'Opt in to share your verified progress and achievements with other scholars.'}
@@ -101,8 +101,8 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
           disabled={isTogglingOptIn}
           className={`px-3 py-1.5 rounded-lg font-semibold transition cursor-pointer self-start sm:self-auto ${
             optedIn
-              ? 'border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-              : 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-2xs'
+              ? 'border border-white/10 text-[#94A3B8] hover:bg-white/5'
+              : 'bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-2xs'
           }`}
         >
           {isTogglingOptIn ? 'Saving...' : optedIn ? 'Make Private' : 'Opt In to Leaderboard'}
@@ -110,18 +110,18 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
       </div>
 
       {/* Leaderboard Table / Cards */}
-      <div className="bg-white dark:bg-[#181C24] border border-[#D9DEE7] dark:border-[#2D3545] rounded-2xl shadow-xs overflow-hidden">
-        <div className="p-4 sm:p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-bold text-gray-700 dark:text-gray-300">
-            <Users className="w-4 h-4 text-indigo-600" />
+      <div className="bg-[#0A0F1D] border border-white/8 rounded-2xl shadow-xs overflow-hidden">
+        <div className="p-4 sm:p-5 border-b border-white/6 flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#94A3B8]">
+            <Users className="w-4 h-4 text-[#3B82F6]" />
             <span>Top Scholars ({activeLeaderboard.length} Ranked)</span>
           </div>
-          <span className="text-[11px] text-gray-500 dark:text-gray-400">
+          <span className="text-[11px] text-[#64748B]">
             Click any scholar to inspect public badges
           </span>
         </div>
 
-        <div className="divide-y divide-gray-100 dark:divide-gray-800">
+        <div className="divide-y divide-white/6">
           {activeLeaderboard.map((entry) => {
             const isMe = entry.isCurrentUser || entry.studentId === currentStudentId;
 
@@ -131,8 +131,8 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
                 onClick={() => setSelectedEntry(entry)}
                 className={`p-4 sm:p-5 flex items-center justify-between gap-4 cursor-pointer transition ${
                   isMe
-                    ? 'bg-indigo-50/70 dark:bg-indigo-950/30 border-l-4 border-indigo-600'
-                    : 'hover:bg-gray-50/60 dark:hover:bg-[#1C212B]'
+                    ? 'bg-[#2563EB]/10 border-l-4 border-[#2563EB]'
+                    : 'hover:bg-white/5'
                 }`}
               >
                 {/* Left: Rank, Avatar, Name */}
@@ -140,33 +140,33 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
                   <div
                     className={`w-7 h-7 rounded-lg font-black text-xs flex items-center justify-center shrink-0 ${
                       entry.rank === 1
-                        ? 'bg-amber-400 text-amber-950 shadow-xs'
+                        ? 'bg-amber-500 text-amber-950 shadow-xs'
                         : entry.rank === 2
-                        ? 'bg-gray-300 dark:bg-gray-700 text-gray-800 dark:text-gray-200'
+                        ? 'bg-white/15 text-[#E2E8F0]'
                         : entry.rank === 3
                         ? 'bg-amber-700 text-amber-100'
-                        : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400'
+                        : 'bg-white/8 text-[#94A3B8]'
                     }`}
                   >
                     {entry.rank}
                   </div>
 
-                  <div className="w-9 h-9 rounded-full bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-full bg-[#2563EB] text-white font-bold text-xs flex items-center justify-center shrink-0">
                     {entry.avatar || entry.displayName.slice(0, 2).toUpperCase()}
                   </div>
 
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <h4 className="text-sm font-bold text-gray-900 dark:text-white truncate">
+                      <h4 className="text-sm font-bold text-white truncate">
                         {entry.displayName}
                       </h4>
                       {isMe && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#2563EB] text-white">
                           You
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-[#64748B]">
                       Level {entry.level} • {entry.earnedBadgesCount} Badges
                     </p>
                   </div>
@@ -175,7 +175,7 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
                 {/* Right: XP & Inspect Badges Action */}
                 <div className="flex items-center gap-4 shrink-0">
                   <div className="text-right">
-                    <span className="text-sm sm:text-base font-black text-indigo-900 dark:text-indigo-200 block">
+                    <span className="text-sm sm:text-base font-black text-[#93C5FD] block">
                       {entry.xp} XP
                     </span>
                   </div>
@@ -186,9 +186,9 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
                       e.stopPropagation();
                       setSelectedEntry(entry);
                     }}
-                    className="px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 text-xs font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-1.5 transition"
+                    className="px-3 py-1.5 rounded-lg border border-white/8 hover:bg-white/5 text-xs font-semibold text-[#94A3B8] flex items-center gap-1.5 transition"
                   >
-                    <Award className="w-3.5 h-3.5 text-amber-500" />
+                    <Award className="w-3.5 h-3.5 text-orange-400" />
                     <span className="hidden sm:inline">View Badges</span>
                   </button>
                 </div>
@@ -201,32 +201,32 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
       {/* Peer Badges Inspection Modal */}
       {selectedEntry && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white dark:bg-[#181C24] border border-[#D9DEE7] dark:border-[#2D3545] rounded-2xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-[#0A0F1D] border border-white/8 rounded-2xl p-6 sm:p-7 max-w-md w-full shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
             <button
               type="button"
               onClick={() => setSelectedEntry(null)}
-              className="absolute top-4 right-4 p-1.5 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              className="absolute top-4 right-4 p-1.5 text-[#64748B] hover:text-white rounded-lg hover:bg-white/5 cursor-pointer"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-indigo-600 text-white font-black text-sm flex items-center justify-center">
+              <div className="w-12 h-12 rounded-full bg-[#2563EB] text-white font-black text-sm flex items-center justify-center">
                 {selectedEntry.avatar || selectedEntry.displayName.slice(0, 2).toUpperCase()}
               </div>
               <div>
-                <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                <h3 className="text-lg font-bold text-white">
                   {selectedEntry.displayName}
                 </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400">
+                <p className="text-xs text-[#64748B]">
                   Rank #{selectedEntry.rank} • Level {selectedEntry.level} • {selectedEntry.xp} XP
                 </p>
               </div>
             </div>
 
-            <div className="border-t border-gray-100 dark:border-gray-800 pt-4 space-y-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 block">
+            <div className="border-t border-white/6 pt-4 space-y-3">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#64748B] block">
                 Public Unlocked Badges ({selectedEntry.badges.length})
               </span>
 
@@ -235,28 +235,28 @@ export const LeaderboardPage: React.FC<LeaderboardPageProps> = ({
                   {selectedEntry.badges.map((b) => (
                     <div
                       key={b.id}
-                      className="p-3 rounded-xl bg-gray-50 dark:bg-[#1C212B] border border-gray-200 dark:border-gray-800 flex items-center gap-3 text-xs"
+                      className="p-3 rounded-xl bg-white/5 border border-white/8 flex items-center gap-3 text-xs"
                     >
-                      <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                      <div className="w-8 h-8 rounded-lg bg-orange-500/15 text-orange-400 flex items-center justify-center shrink-0">
                         <Award className="w-4 h-4" />
                       </div>
                       <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white">{b.title}</h4>
-                        <p className="text-gray-500 dark:text-gray-400">{b.description}</p>
+                        <h4 className="font-bold text-white">{b.title}</h4>
+                        <p className="text-[#64748B]">{b.description}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-gray-500 italic">No public badges displayed.</p>
+                <p className="text-xs text-[#64748B] italic">No public badges displayed.</p>
               )}
             </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-800">
+            <div className="mt-6 pt-4 border-t border-white/6">
               <button
                 type="button"
                 onClick={() => setSelectedEntry(null)}
-                className="w-full py-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-xs font-bold text-gray-800 dark:text-gray-200 transition"
+                className="w-full py-2.5 rounded-xl bg-white/8 hover:bg-white/12 text-xs font-bold text-[#E2E8F0] transition cursor-pointer"
               >
                 Close
               </button>

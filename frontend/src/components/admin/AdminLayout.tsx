@@ -129,7 +129,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F7FA] dark:bg-[#0F1218] text-[#1F2937] dark:text-[#F3F4F6] flex">
+    <div className="min-h-screen bg-[#03050C] text-[#F8FAFC] flex">
       {/* Toast Notification Stack */}
       <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm pointer-events-none">
         {toasts.map((t) => (
@@ -138,23 +138,23 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             role="status"
             className={`pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-xl border shadow-lg text-sm animate-in slide-in-from-top duration-150 ${
               t.type === 'success'
-                ? 'bg-[#EAF7F0] text-[#18794E] border-[#18794E]/30 dark:bg-emerald-950/80 dark:text-emerald-200 dark:border-emerald-800'
+                ? 'bg-emerald-950/90 text-emerald-200 border-emerald-800'
                 : t.type === 'error'
-                ? 'bg-[#FEF0EF] text-[#B42318] border-[#B42318]/30 dark:bg-rose-950/80 dark:text-rose-200 dark:border-rose-800'
-                : 'bg-[#EFF8FF] text-[#175CD3] border-[#175CD3]/30 dark:bg-indigo-950/80 dark:text-indigo-200 dark:border-indigo-800'
+                ? 'bg-rose-950/90 text-rose-200 border-rose-800'
+                : 'bg-blue-950/90 text-blue-200 border-blue-800'
             }`}
           >
             <div className="flex items-center gap-2">
               {t.type === 'success' ? (
-                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
               ) : (
-                <AlertCircle className="w-4 h-4 shrink-0" />
+                <AlertCircle className="w-4 h-4 shrink-0 text-rose-400" />
               )}
-              <span className="font-semibold text-xs sm:text-sm">{t.message}</span>
+              <span className="font-semibold text-xs sm:text-sm text-white">{t.message}</span>
             </div>
             <button
               onClick={() => onDismissToast(t.id)}
-              className="text-current opacity-70 hover:opacity-100 p-0.5 cursor-pointer"
+              className="text-white/60 hover:text-white p-0.5 cursor-pointer"
               aria-label="Dismiss notification"
             >
               <X className="w-4 h-4" />
@@ -166,37 +166,37 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Mobile Backdrop */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden backdrop-blur-xs"
+          className="fixed inset-0 z-40 bg-black/70 lg:hidden backdrop-blur-xs"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
       {/* Desktop & Mobile Sidebar (w-64) */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-[#181C24] border-r border-[#D9DEE7] dark:border-[#2D3545] flex flex-col justify-between transition-transform duration-200 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#050711] border-r border-white/10 flex flex-col justify-between transition-transform duration-200 lg:translate-x-0 ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div>
           {/* Brand Header */}
-          <div className="h-16 px-5 border-b border-[#D9DEE7] dark:border-[#2D3545] flex items-center justify-between">
+          <div className="h-16 px-5 border-b border-white/10 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-600 to-indigo-700 text-white flex items-center justify-center font-bold text-base shadow-sm">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-cyan-400 text-white flex items-center justify-center font-bold text-base shadow-sm shadow-cyan-500/25">
                 <Shield className="w-4 h-4" />
               </div>
               <div>
-                <span className="font-bold text-base text-gray-900 dark:text-white tracking-tight">
+                <span className="font-monument font-bold text-sm text-white tracking-tight">
                   Learnova
                 </span>
-                <span className="block text-[10px] font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
-                  Admin Governance
+                <span className="block text-[10px] font-semibold text-cyan-400 uppercase tracking-wider">
+                  Governance & Admin
                 </span>
               </div>
             </div>
             <button
               type="button"
               onClick={() => setMobileMenuOpen(false)}
-              className="lg:hidden p-1 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 rounded"
+              className="lg:hidden p-1 text-[#64748B] hover:text-white rounded"
               aria-label="Close sidebar"
             >
               <X className="w-5 h-5" />
@@ -216,22 +216,22 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer ${
                     isActive
-                      ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300 font-bold'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/60'
+                      ? 'bg-cyan-500/15 text-cyan-300 font-bold border border-cyan-400/25 shadow-[0_0_15px_rgba(34,211,238,0.08)]'
+                      : 'text-[#94A3B8] hover:bg-white/5 hover:text-white'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
                     <Icon
                       className={`w-4 h-4 shrink-0 ${
                         isActive
-                          ? 'text-purple-600 dark:text-purple-400'
-                          : 'text-gray-400 dark:text-gray-400'
+                          ? 'text-cyan-400'
+                          : 'text-[#64748B]'
                       }`}
                     />
                     <span>{item.label}</span>
                   </div>
                   {item.badge && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300">
+                    <span className="text-[10px] px-1.5 py-0.5 rounded font-medium bg-white/5 text-[#94A3B8] border border-white/8">
                       {item.badge}
                     </span>
                   )}
@@ -242,52 +242,52 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </div>
 
         {/* Bottom Section: Portal Switcher, Profile, Theme Toggle */}
-        <div className="p-3 border-t border-[#D9DEE7] dark:border-[#2D3545] space-y-2">
+        <div className="p-3 border-t border-white/8 space-y-2">
           {/* Switch Portal Section */}
-          <div className="p-2 rounded-xl bg-gray-50/80 dark:bg-[#12161F] border border-gray-200/80 dark:border-gray-800/80 space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 px-1">
+          <div className="p-2 rounded-xl bg-white/5 border border-white/8 space-y-1">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-[#64748B] px-1">
               Switch Workspace
             </p>
             <button
               type="button"
               onClick={() => onSwitchPortal('teacher')}
-              className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 transition cursor-pointer"
+              className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium text-[#94A3B8] hover:bg-white/5 hover:text-white transition cursor-pointer"
             >
               <div className="flex items-center gap-1.5">
-                <ArrowRightLeft className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                <ArrowRightLeft className="w-3.5 h-3.5 text-orange-400" />
                 <span>Teacher Portal</span>
               </div>
-              <span className="text-[10px] text-gray-400">Staff</span>
+              <span className="text-[10px] text-[#64748B]">Staff</span>
             </button>
             <button
               type="button"
               onClick={() => onSwitchPortal('student')}
-              className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 transition cursor-pointer"
+              className="w-full flex items-center justify-between px-2 py-1.5 rounded-lg text-xs font-medium text-[#94A3B8] hover:bg-white/5 hover:text-white transition cursor-pointer"
             >
               <div className="flex items-center gap-1.5">
-                <ArrowRightLeft className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                <ArrowRightLeft className="w-3.5 h-3.5 text-[#3B82F6]" />
                 <span>Student Portal</span>
               </div>
-              <span className="text-[10px] text-gray-400">Learner</span>
+              <span className="text-[10px] text-[#64748B]">Learner</span>
             </button>
           </div>
 
           {/* Admin Profile Row */}
-          <div className="p-2 rounded-xl bg-purple-50/50 dark:bg-purple-950/30 border border-purple-200/60 dark:border-purple-800/50 flex items-center justify-between">
+          <div className="p-2 rounded-xl bg-white/5 border border-white/8 flex items-center justify-between">
             <button
               type="button"
               onClick={() => handleNavClick('profile')}
               className="flex items-center gap-2.5 min-w-0 text-left hover:opacity-80 transition cursor-pointer"
               title="Administrator profile and security credentials"
             >
-              <div className="w-8 h-8 rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
+              <div className="w-8 h-8 rounded-full bg-[#2563EB] text-white font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
                 {currentAdmin.avatar || currentAdmin.name.slice(0, 2).toUpperCase()}
               </div>
               <div className="min-w-0">
-                <p className="text-xs font-bold text-gray-900 dark:text-white truncate">
+                <p className="text-xs font-bold text-white truncate">
                   {currentAdmin.name}
                 </p>
-                <p className="text-[10px] text-purple-600 dark:text-purple-400 font-medium truncate">
+                <p className="text-[10px] text-[#3B82F6] font-medium truncate">
                   {currentAdmin.department || 'System Admin'}
                 </p>
               </div>
@@ -296,7 +296,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             <button
               type="button"
               onClick={onSignOut}
-              className="p-1 text-gray-400 hover:text-rose-600 dark:hover:text-rose-400 rounded transition cursor-pointer"
+              className="p-1 text-[#64748B] hover:text-rose-400 rounded transition cursor-pointer"
               title="Sign out of administrative session"
               aria-label="Sign out"
             >
@@ -309,39 +309,39 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
       {/* Main Content Area */}
       <div className="flex-1 lg:pl-64 flex flex-col min-h-screen">
         {/* Global Header */}
-        <header className="sticky top-0 z-30 h-16 bg-white dark:bg-[#181C24] border-b border-[#D9DEE7] dark:border-[#2D3545] px-4 sm:px-6 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-30 h-16 bg-[#050711]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-6 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <button
               type="button"
               onClick={() => setMobileMenuOpen(true)}
-              className="lg:hidden p-2 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+              className="lg:hidden p-2 text-[#94A3B8] rounded-lg hover:bg-white/5 cursor-pointer"
               aria-label="Open sidebar"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             {/* Breadcrumb Path */}
-            <nav className="flex items-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 truncate" aria-label="Breadcrumb">
+            <nav className="flex items-center text-xs sm:text-sm text-[#64748B] truncate" aria-label="Breadcrumb">
               <button
                 type="button"
                 onClick={() => onNavigate('dashboard')}
-                className="hover:text-purple-600 dark:hover:text-purple-400 font-medium"
+                className="hover:text-cyan-400 font-medium"
               >
                 Governance
               </button>
               {breadcrumbs.map((crumb, idx) => (
                 <React.Fragment key={idx}>
-                  <ChevronRight className="w-3.5 h-3.5 mx-1.5 text-gray-400 shrink-0" />
+                  <ChevronRight className="w-3.5 h-3.5 mx-1.5 text-[#475569] shrink-0" />
                   {crumb.page ? (
                     <button
                       type="button"
                       onClick={() => onNavigate(crumb.page!, crumb.params)}
-                      className="hover:text-purple-600 dark:hover:text-purple-400 truncate"
+                      className="hover:text-cyan-400 truncate"
                     >
                       {crumb.label}
                     </button>
                   ) : (
-                    <span className="font-semibold text-gray-900 dark:text-white truncate">
+                    <span className="font-semibold text-white truncate">
                       {crumb.label}
                     </span>
                   )}
@@ -356,18 +356,18 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
             <button
               type="button"
               onClick={() => onNavigate('health')}
-              className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold hover:bg-emerald-100 transition cursor-pointer"
+              className="hidden sm:flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-950/40 border border-emerald-800 text-emerald-300 text-xs font-semibold hover:bg-emerald-900/40 transition cursor-pointer"
               title="View system telemetry"
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               <span>Telemetry: Active</span>
             </button>
 
-            {/* Dark/Light Theme Toggle */}
+            {/* Theme Toggle */}
             <button
               type="button"
               onClick={toggleTheme}
-              className="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition cursor-pointer"
+              className="p-2 rounded-xl text-[#94A3B8] hover:bg-white/5 hover:text-white transition cursor-pointer"
               aria-label="Toggle theme mode"
               title="Toggle theme mode"
             >
@@ -380,7 +380,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
                   />
                 </svg>
               ) : (
-                <svg className="w-4 h-4 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                 </svg>
               )}
@@ -389,7 +389,10 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
         </header>
 
         {/* Page Content Viewport */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+        <main
+          key={currentPage}
+          className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto w-full animate-fade-in"
+        >
           {children}
         </main>
       </div>

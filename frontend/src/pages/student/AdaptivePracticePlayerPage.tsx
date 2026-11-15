@@ -128,8 +128,8 @@ export const AdaptivePracticePlayerPage: React.FC<AdaptivePracticePlayerPageProp
 
   if (!currentQuestion) {
     return (
-      <div className="p-12 text-center">
-        <p className="text-sm text-gray-500">Initializing adaptive practice item...</p>
+      <div className="p-12 text-center bg-[#0A0F1D] border border-white/8 rounded-2xl">
+        <p className="text-sm text-[#94A3B8]">Initializing adaptive practice item...</p>
       </div>
     );
   }
@@ -150,14 +150,14 @@ export const AdaptivePracticePlayerPage: React.FC<AdaptivePracticePlayerPageProp
     >
       <div className="space-y-4">
         {/* Adaptive Difficulty Indicator Pill */}
-        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pb-2 border-b border-gray-100 dark:border-gray-800">
+        <div className="flex items-center justify-between text-xs text-[#64748B] pb-2 border-b border-white/8">
           <span>
             Current Engine Tier:{' '}
-            <strong className="text-indigo-600 dark:text-indigo-400 capitalize">
+            <strong className="text-[#3B82F6] capitalize">
               {currentQuestion.difficulty} Difficulty
             </strong>
           </span>
-          <span className="text-[11px] bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 px-2 py-0.5 rounded-full border border-purple-200 dark:border-purple-800">
+          <span className="text-[11px] bg-purple-500/15 text-purple-400 px-2 py-0.5 rounded-full border border-purple-500/25">
             SSD-04 Dynamic Selection
           </span>
         </div>

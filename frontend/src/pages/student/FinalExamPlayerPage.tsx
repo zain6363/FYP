@@ -97,9 +97,9 @@ export const FinalExamPlayerPage: React.FC<FinalExamPlayerPageProps> = ({
 
   if (!currentQuestion) {
     return (
-      <div className="p-12 text-center">
-        <p className="text-sm text-gray-500">Exam questions could not be loaded.</p>
-        <button type="button" onClick={onExit} className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-xl text-xs">
+      <div className="p-12 text-center bg-[#0A0F1D] border border-white/8 rounded-2xl">
+        <p className="text-sm text-[#94A3B8]">Exam questions could not be loaded.</p>
+        <button type="button" onClick={onExit} className="mt-4 px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] text-white rounded-xl text-xs font-semibold cursor-pointer">
           Return to Course
         </button>
       </div>
@@ -122,11 +122,11 @@ export const FinalExamPlayerPage: React.FC<FinalExamPlayerPageProps> = ({
         isLastQuestion={isLastQuestion}
       >
         <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pb-2 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center justify-between text-xs text-[#64748B] pb-2 border-b border-white/8">
             <span>
-              Examination Paper: <strong>Official Summative Evaluation</strong>
+              Examination Paper: <strong className="text-white">Official Summative Evaluation</strong>
             </span>
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
+            <span className="font-semibold text-[#94A3B8]">
               {answeredCount} of {totalQuestions} Answered
             </span>
           </div>
@@ -143,23 +143,23 @@ export const FinalExamPlayerPage: React.FC<FinalExamPlayerPageProps> = ({
       {/* Final Submission Confirmation Dialog */}
       {showSubmitModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white dark:bg-[#181C24] border border-[#D9DEE7] dark:border-[#2D3545] rounded-2xl p-6 sm:p-7 max-w-md w-full shadow-2xl">
-            <div className="w-12 h-12 rounded-xl bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-4">
+          <div className="bg-[#0A0F1D] border border-white/10 rounded-2xl p-6 sm:p-7 max-w-md w-full shadow-2xl">
+            <div className="w-12 h-12 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center mb-4">
               <CheckCircle2 className="w-6 h-6" />
             </div>
 
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-lg font-bold text-white mb-2">
               Ready to submit your examination?
             </h3>
 
-            <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
-              You have answered <strong>{answeredCount} of {totalQuestions}</strong> questions.
+            <p className="text-sm text-[#94A3B8] mb-4 leading-relaxed">
+              You have answered <strong className="text-white">{answeredCount} of {totalQuestions}</strong> questions.
               Once submitted, your final evaluation will be recorded and course completion calculated.
             </p>
 
             {answeredCount < totalQuestions && (
-              <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs mb-5 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
+              <div className="p-3 rounded-xl bg-orange-500/10 border border-orange-500/20 text-orange-200 text-xs mb-5 flex items-center gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-orange-400" />
                 <span>You have unanswered questions. Unanswered items receive 0 points.</span>
               </div>
             )}
@@ -168,14 +168,14 @@ export const FinalExamPlayerPage: React.FC<FinalExamPlayerPageProps> = ({
               <button
                 type="button"
                 onClick={() => setShowSubmitModal(false)}
-                className="px-4 py-2 text-sm font-medium rounded-xl border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
+                className="px-4 py-2 text-sm font-medium rounded-xl border border-white/10 text-[#94A3B8] hover:text-white hover:bg-white/5 cursor-pointer"
               >
                 Return to Exam
               </button>
               <button
                 type="button"
                 onClick={handleFinalSubmit}
-                className="px-5 py-2 text-sm font-semibold rounded-xl bg-purple-600 hover:bg-purple-700 text-white shadow-xs cursor-pointer"
+                className="px-5 py-2 text-sm font-semibold rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-sm shadow-blue-600/30 cursor-pointer"
               >
                 Confirm & Submit
               </button>
