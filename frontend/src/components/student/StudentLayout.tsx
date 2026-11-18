@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   LayoutDashboard,
   BookOpen,
-  Compass,
   BarChart2,
   Award,
   Trophy,
@@ -106,7 +105,6 @@ export const StudentLayout: React.FC<StudentLayoutProps> = ({
     { id: 'landing' as StudentNavigationPage, label: 'Home', icon: Sparkles },
     { id: 'dashboard' as StudentNavigationPage, label: 'Dashboard', icon: LayoutDashboard },
     { id: 'my_learning' as StudentNavigationPage, label: 'My Learning', icon: BookOpen },
-    { id: 'catalog' as StudentNavigationPage, label: 'Explore Courses', icon: Compass },
     { id: 'progress' as StudentNavigationPage, label: 'Progress & Mastery', icon: BarChart2 },
     { id: 'achievements' as StudentNavigationPage, label: 'Achievements', icon: Award },
     { id: 'leaderboard' as StudentNavigationPage, label: 'Leaderboard', icon: Trophy },

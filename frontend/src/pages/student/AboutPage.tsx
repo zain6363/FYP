@@ -72,7 +72,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
           <button
             type="button"
-            onClick={() => onNavigate('catalog')}
+            onClick={() => onNavigate('landing')}
             className="relative py-1 hover:text-white transition-colors cursor-pointer"
           >
             <span>Courses</span>
@@ -270,7 +270,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
             <div className="mt-8 flex items-center gap-4">
               <button
                 type="button"
-                onClick={() => onNavigate('catalog')}
+                onClick={() => onNavigate('landing')}
                 className="px-6 py-3 rounded-full bg-cyan-400 hover:bg-cyan-300 text-black font-semibold text-xs uppercase tracking-wider transition-all shadow-[0_0_20px_rgba(34,211,238,0.3)] flex items-center gap-2 cursor-pointer"
               >
                 <span>Explore Curricula</span>
@@ -321,7 +321,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
 
         <div className="flex items-center gap-6">
           <button type="button" onClick={() => onNavigate('landing')} className="hover:text-white transition">Home</button>
-          <button type="button" onClick={() => onNavigate('catalog')} className="hover:text-white transition">Courses</button>
+          <button type="button" onClick={() => onNavigate('landing')} className="hover:text-white transition">Courses</button>
           <button type="button" onClick={() => onNavigate('about')} className="text-white">About</button>
           <button type="button" onClick={() => onNavigate('contact')} className="hover:text-white transition">Contact</button>
         </div>

@@ -77,14 +77,6 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
             Pick up where you left off or explore recommended practice sessions.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => onNavigate('catalog')}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/10 bg-[#0A0F1D] hover:bg-white/5 text-sm font-semibold text-[#E2E8F0] transition shadow-2xs self-start sm:self-auto cursor-pointer"
-        >
-          <Compass className="w-4 h-4 text-[#3B82F6]" />
-          <span>Explore Course Catalog</span>
-        </button>
       </div>
 
       {/* Main Grid: Left Primary Column (8 cols) & Right Insights Column (4 cols) */}
@@ -95,7 +87,7 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
           {primaryCourse && nextLesson ? (
             <div className="p-6 sm:p-7 rounded-2xl bg-[#0A0F1D] border border-white/8 shadow-xs relative overflow-hidden">
               <div className="absolute top-0 right-0 w-64 h-64 bg-[#2563EB]/5 rounded-full blur-3xl pointer-events-none" />
-              
+
               <div className="flex items-center justify-between gap-3 mb-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#3B82F6] flex items-center gap-1.5">
                   <span className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse" />
@@ -149,15 +141,15 @@ export const StudentDashboardPage: React.FC<StudentDashboardPageProps> = ({
                   Start your learning journey
                 </h3>
                 <p className="text-sm text-[#64748B] mt-1">
-                  You are not currently enrolled in any course. Discover available courses in our catalog.
+                  You are not currently enrolled in any course. Discover available courses on the home page.
                 </p>
               </div>
               <button
                 type="button"
-                onClick={() => onNavigate('catalog')}
+                onClick={() => onNavigate('landing')}
                 className="px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-sm transition cursor-pointer"
               >
-                Browse Course Catalog
+                Explore Courses on Home
               </button>
             </div>
           )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Course, Enrollment, StudentUser } from '../../types';
+import { Course, Enrollment, StudentUser, Topic, Lesson } from '../../types';
 import {
   ArrowRight,
   BookOpen,
@@ -74,18 +74,24 @@ const FadeInSection: React.FC<{
 
 interface LandingHeroPageProps {
   courses: Course[];
+  topics?: Topic[];
+  lessons?: Lesson[];
   enrollments?: Enrollment[];
   currentStudent: StudentUser | null;
   onNavigate: (page: StudentNavigationPage, params?: Record<string, string>) => void;
+  onEnroll?: (courseId: string) => Promise<void> | void;
   onSwitchToTeacher: () => void;
   onSwitchToAdmin: () => void;
 }
 
 export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
   courses,
+  topics = [],
+  lessons = [],
   enrollments = [],
   currentStudent,
   onNavigate,
+  onEnroll,
   onSwitchToTeacher,
   onSwitchToAdmin,
 }) => {
@@ -100,6 +106,10 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
   const [activeStage, setActiveStage]       = useState(0);
   const activeStageRef                       = useRef(0);
   const [searchQuery, setSearchQuery]        = useState('');
+  const [courseFilter, setCourseFilter]      = useState<'all' | 'enrolled' | 'available'>('all');
+  const [showAllCourses, setShowAllCourses]  = useState(false);
+  const [selectedCourseForSyllabus, setSelectedCourseForSyllabus] = useState<Course | null>(null);
+  const [enrollingCourseId, setEnrollingCourseId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen]  = useState(false);
   const [isScrolledPastHero, setIsScrolledPastHero] = useState(false);
   const heroRef       = useRef<HTMLDivElement>(null);
@@ -109,13 +119,53 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
   const enrolledCourseIds = new Set(enrollments.map((e) => e.courseId));
   const publishedCourses  = courses.filter((c) => c.status === 'published' || !c.status);
   const filteredCourses   = publishedCourses.filter((course) => {
+    const isEnrolled = enrolledCourseIds.has(course.id);
+    if (courseFilter === 'enrolled' && !isEnrolled) return false;
+    if (courseFilter === 'available' && isEnrolled) return false;
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
-      return course.title.toLowerCase().includes(q) ||
-        (course.description && course.description.toLowerCase().includes(q));
+      return (
+        course.title.toLowerCase().includes(q) ||
+        (course.description && course.description.toLowerCase().includes(q))
+      );
     }
     return true;
   });
+  const displayedCourses = showAllCourses ? filteredCourses : filteredCourses.slice(0, 6);
+
+  const handleEnrollFromHome = async (courseId: string) => {
+    if (!currentStudent) {
+      onNavigate('register');
+      return;
+    }
+    if (enrolledCourseIds.has(courseId)) {
+      onNavigate('course_map', { courseId });
+      return;
+    }
+    if (onEnroll) {
+      setEnrollingCourseId(courseId);
+      try {
+        await onEnroll(courseId);
+        onNavigate('course_map', { courseId });
+      } finally {
+        setEnrollingCourseId(null);
+      }
+    } else {
+      onNavigate('course_map', { courseId });
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash;
+      if (hash === '#curriculum-grid' || hash === '#courses') {
+        setTimeout(() => {
+          const gridEl = document.getElementById('curriculum-grid');
+          gridEl?.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    }
+  }, []);
 
   // ── GSAP ScrollTrigger: scrub:true drives 3D turntable particle rotation ──
   useEffect(() => {
@@ -184,8 +234,6 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
     const gridEl = document.getElementById('curriculum-grid');
     if (gridEl) {
       gridEl.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      onNavigate('catalog');
     }
   };
 
@@ -238,7 +286,7 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
 
           <button
             type="button"
-            onClick={() => onNavigate('catalog')}
+            onClick={scrollToCurriculum}
             className="relative py-1 hover:text-white transition-colors cursor-pointer"
           >
             <span>Courses</span>
@@ -312,9 +360,9 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
           {/* Quick Catalog Grid Shortcut */}
           <button
             type="button"
-            onClick={() => onNavigate('catalog')}
+            onClick={scrollToCurriculum}
             className="hidden sm:block p-2 text-white/60 hover:text-white transition cursor-pointer"
-            title="Open Complete Catalog"
+            title="View Courses on Home"
           >
             <Grid className="w-4 h-4" />
           </button>
@@ -350,8 +398,7 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  onNavigate('catalog');
-                  setMobileMenuOpen(false);
+                  scrollToCurriculum();
                 }}
                 className="text-left py-2 text-white hover:text-cyan-400 border-b border-white/5"
               >
@@ -619,7 +666,7 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
             </div>
 
             {/* Row 1 */}
-            <div className="space-y-1.5 group cursor-pointer" onClick={() => onNavigate('catalog')}>
+            <div className="space-y-1.5 group cursor-pointer" onClick={scrollToCurriculum}>
               <div className="flex items-center gap-2.5">
                 <span className="text-xs text-cyan-400 font-mono font-bold">01</span>
                 <h3 className="font-sans font-bold text-2xl sm:text-3xl text-white group-hover:text-cyan-300 transition-colors drop-shadow-[0_2px_12px_rgba(0,0,0,0.9)]">
@@ -688,10 +735,10 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <button
                 type="button"
-                onClick={() => onNavigate('catalog')}
+                onClick={scrollToCurriculum}
                 className="px-8 py-3.5 rounded-full bg-blue-600 hover:bg-blue-500 border border-blue-400/40 text-white font-semibold text-sm transition-all shadow-[0_0_25px_rgba(37,99,235,0.4)] cursor-pointer flex items-center gap-2 group"
               >
-                <span>Explore Course Catalog</span>
+                <span>Explore Courses</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
               <button
@@ -724,87 +771,161 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
               </h2>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="relative w-full md:w-72">
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative w-full sm:w-64 md:w-72">
                 <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500" />
                 <input
                   type="text"
                   placeholder="Filter courses..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 rounded-full bg-[#060813] border border-white/10 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
+                  className="w-full pl-10 pr-8 py-2 rounded-full bg-[#060813] border border-white/10 text-xs text-white placeholder-stone-500 focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400"
                 />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
 
-              <button
-                type="button"
-                onClick={() => onNavigate('catalog')}
-                className="shrink-0 px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold uppercase tracking-wider transition cursor-pointer backdrop-blur-md"
-              >
-                All Courses
-              </button>
+              {/* Filter Pills */}
+              <div className="flex items-center gap-1.5 p-1 rounded-full bg-white/[0.04] border border-white/10 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setCourseFilter('all')}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                    courseFilter === 'all'
+                      ? 'bg-cyan-400 text-black shadow-[0_0_12px_rgba(34,211,238,0.35)]'
+                      : 'text-[#94A3B8] hover:text-white'
+                  }`}
+                >
+                  All ({publishedCourses.length})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCourseFilter('available')}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                    courseFilter === 'available'
+                      ? 'bg-cyan-400 text-black shadow-[0_0_12px_rgba(34,211,238,0.35)]'
+                      : 'text-[#94A3B8] hover:text-white'
+                  }`}
+                >
+                  Available
+                </button>
+                {currentStudent && (
+                  <button
+                    type="button"
+                    onClick={() => setCourseFilter('enrolled')}
+                    className={`px-3 py-1 rounded-full text-xs font-semibold transition cursor-pointer ${
+                      courseFilter === 'enrolled'
+                        ? 'bg-cyan-400 text-black shadow-[0_0_12px_rgba(34,211,238,0.35)]'
+                        : 'text-[#94A3B8] hover:text-white'
+                    }`}
+                  >
+                    Enrolled ({enrolledCourseIds.size})
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-10">
-            {filteredCourses.slice(0, 6).map((course, idx) => {
-              const isEnrolled = enrolledCourseIds.has(course.id);
-              return (
-                <div
-                  key={course.id || idx}
-                  className="rounded-3xl bg-[#060813] border border-white/10 p-6 sm:p-7 hover:border-cyan-500/50 shadow-lg hover:shadow-cyan-950/30 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group animate-fade-in"
-                >
-                  <div>
-                    <div className="flex items-center justify-between text-xs font-mono text-[#64748B] mb-3">
-                      <span>MODULE {String(idx + 1).padStart(2, '0')}</span>
-                      <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-sans font-semibold ${
-                        isEnrolled ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800' : 'bg-cyan-950/50 text-cyan-300 border border-cyan-800'
-                      }`}>
-                        {isEnrolled ? 'Active' : 'Verified'}
-                      </span>
+          {displayedCourses.length === 0 ? (
+            <div className="text-center py-16 bg-[#060813] border border-white/10 rounded-3xl mt-10 p-8 space-y-3">
+              <BookOpen className="w-8 h-8 text-cyan-400 mx-auto" />
+              <h3 className="text-base font-bold text-white">No courses match your filter</h3>
+              <p className="text-xs text-[#94A3B8] max-w-sm mx-auto">
+                Try adjusting your search keywords or clearing your filter to view all verified courses.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchQuery('');
+                  setCourseFilter('all');
+                }}
+                className="mt-2 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition cursor-pointer"
+              >
+                Reset Filter
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-10">
+              {displayedCourses.map((course, idx) => {
+                const isEnrolled = enrolledCourseIds.has(course.id);
+                return (
+                  <div
+                    key={course.id || idx}
+                    className="rounded-3xl bg-[#060813] border border-white/10 p-6 sm:p-7 hover:border-cyan-500/50 shadow-lg hover:shadow-cyan-950/30 hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between group animate-fade-in"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between text-xs font-mono text-[#64748B] mb-3">
+                        <span>MODULE {String(idx + 1).padStart(2, '0')}</span>
+                        <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-sans font-semibold ${
+                          isEnrolled ? 'bg-emerald-950/60 text-emerald-400 border border-emerald-800' : 'bg-cyan-950/50 text-cyan-300 border border-cyan-800'
+                        }`}>
+                          {isEnrolled ? 'Active' : 'Verified'}
+                        </span>
+                      </div>
+
+                      <h3
+                        onClick={() => setSelectedCourseForSyllabus(course)}
+                        className="font-sans font-bold text-xl text-white group-hover:text-cyan-300 transition-colors cursor-pointer"
+                      >
+                        {course.title}
+                      </h3>
+
+                      <p className="mt-2.5 text-xs text-[#94A3B8] line-clamp-3 leading-relaxed">
+                        {course.description || 'Comprehensive curriculum covering foundational theory, guided practice modules, and real-world project mastery.'}
+                      </p>
                     </div>
 
-                    <h3
-                      onClick={() => onNavigate('course_details', { courseId: course.id })}
-                      className="font-sans font-bold text-xl text-white group-hover:text-cyan-300 transition-colors cursor-pointer"
-                    >
-                      {course.title}
-                    </h3>
+                    <div className="pt-5 mt-6 border-t border-white/10 flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedCourseForSyllabus(course)}
+                        className="text-xs font-semibold text-[#94A3B8] hover:text-white flex items-center gap-1 transition cursor-pointer"
+                      >
+                        <span>Syllabus</span>
+                        <ArrowUpRight className="w-3.5 h-3.5" />
+                      </button>
 
-                    <p className="mt-2.5 text-xs text-[#94A3B8] line-clamp-3 leading-relaxed">
-                      {course.description || 'Comprehensive curriculum covering foundational theory, guided practice modules, and real-world project mastery.'}
-                    </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (isEnrolled) {
+                            onNavigate('course_map', { courseId: course.id });
+                          } else {
+                            handleEnrollFromHome(course.id);
+                          }
+                        }}
+                        disabled={enrollingCourseId === course.id}
+                        className="px-4 py-2 rounded-full text-xs font-bold btn-primary-pill shadow-sm cursor-pointer disabled:opacity-50"
+                      >
+                        {enrollingCourseId === course.id ? 'Enrolling...' : isEnrolled ? 'Open Map' : 'Enroll Now'}
+                      </button>
+                    </div>
                   </div>
+                );
+              })}
+            </div>
+          )}
 
-                  <div className="pt-5 mt-6 border-t border-white/10 flex items-center justify-between">
-                    <button
-                      type="button"
-                      onClick={() => onNavigate('course_details', { courseId: course.id })}
-                      className="text-xs font-semibold text-[#94A3B8] hover:text-white flex items-center gap-1 transition cursor-pointer"
-                    >
-                      <span>Syllabus</span>
-                      <ArrowUpRight className="w-3.5 h-3.5" />
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (isEnrolled) {
-                          onNavigate('course_map', { courseId: course.id });
-                        } else {
-                          onNavigate('course_details', { courseId: course.id });
-                        }
-                      }}
-                      className="px-4 py-2 rounded-full text-xs font-bold btn-primary-pill shadow-sm cursor-pointer"
-                    >
-                      {isEnrolled ? 'Open Map' : 'Enroll Now'}
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+          {/* Toggle View All Courses */}
+          {filteredCourses.length > 6 && (
+            <div className="mt-10 text-center">
+              <button
+                type="button"
+                onClick={() => setShowAllCourses(!showAllCourses)}
+                className="px-6 py-2.5 rounded-full border border-white/20 bg-white/[0.05] hover:bg-white/[0.12] text-white text-xs font-semibold uppercase tracking-wider transition cursor-pointer backdrop-blur-md"
+              >
+                {showAllCourses ? 'Show Fewer Courses' : `View All Courses (${filteredCourses.length})`}
+              </button>
+            </div>
+          )}
         </FadeInSection>
 
         {/* ========================================================================= */}
@@ -897,7 +1018,7 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 mt-8 relative z-10">
               <div
-                onClick={() => onNavigate('catalog')}
+                onClick={scrollToCurriculum}
                 className="p-5 rounded-2xl bg-white/[0.03] border border-white/10 hover:border-cyan-500/50 transition cursor-pointer space-y-2 group"
               >
                 <div className="text-[11px] font-mono text-cyan-400">01 / TOPOLOGY</div>
@@ -950,7 +1071,7 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
                 </span>
                 <ul className="space-y-1.5 text-xs text-[#94A3B8]">
                   <li><button onClick={() => onNavigate('dashboard')} className="hover:text-white transition cursor-pointer">Student Dashboard</button></li>
-                  <li><button onClick={() => onNavigate('catalog')} className="hover:text-white transition cursor-pointer">Course Catalog</button></li>
+                  <li><button onClick={scrollToCurriculum} className="hover:text-white transition cursor-pointer">Courses (Home)</button></li>
                   <li><button onClick={() => onNavigate('my_learning')} className="hover:text-white transition cursor-pointer">Enrolled Modules</button></li>
                   <li><button onClick={() => onNavigate('progress')} className="hover:text-white transition cursor-pointer">Mastery Analytics</button></li>
                 </ul>
@@ -1001,6 +1122,134 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
         </FadeInSection>
 
       </div>
+
+      {/* ========================================================================= */}
+      {/* COURSE DETAILS & SYLLABUS MODAL (Home Page Sub-Page Experience)           */}
+      {/* ========================================================================= */}
+      {selectedCourseForSyllabus && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-fade-in"
+          onClick={() => setSelectedCourseForSyllabus(null)}
+        >
+          <div
+            className="bg-[#070A18] border border-cyan-500/30 rounded-3xl max-w-2xl w-full max-h-[88vh] flex flex-col overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.9)] text-[#F8FAFC]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="p-6 border-b border-white/10 flex items-start justify-between gap-4 bg-[#050713]">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-cyan-950/60 text-cyan-300 border border-cyan-800">
+                    Accredited Syllabus
+                  </span>
+                  <span className="text-xs text-[#64748B]">
+                    {topics.filter((t) => t.courseId === selectedCourseForSyllabus.id).length} Topics
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  {selectedCourseForSyllabus.title}
+                </h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setSelectedCourseForSyllabus(null)}
+                className="p-2 rounded-full hover:bg-white/10 text-[#94A3B8] hover:text-white transition cursor-pointer"
+                aria-label="Close syllabus modal"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Scrollable Body */}
+            <div className="p-6 space-y-6 overflow-y-auto">
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#64748B] mb-2">
+                  Course Overview
+                </h3>
+                <p className="text-sm text-[#CBD5E1] leading-relaxed">
+                  {selectedCourseForSyllabus.description ||
+                    'Comprehensive curriculum covering foundational theory, guided practice modules, and real-world project mastery.'}
+                </p>
+              </div>
+
+              {/* Topics & Lessons Syllabus */}
+              <div>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#64748B] mb-3">
+                  Curriculum Breakdown
+                </h3>
+                <div className="space-y-3">
+                  {topics
+                    .filter((t) => t.courseId === selectedCourseForSyllabus.id)
+                    .sort((a, b) => a.order - b.order)
+                    .map((topic, tIdx) => {
+                      const topicLessons = lessons.filter((l) => l.topicId === topic.id);
+                      return (
+                        <div
+                          key={topic.id}
+                          className="p-4 rounded-2xl bg-white/[0.03] border border-white/8 hover:border-cyan-500/30 transition"
+                        >
+                          <div className="flex items-center justify-between mb-1.5">
+                            <span className="text-xs font-mono font-bold text-cyan-400">
+                              TOPIC {String(tIdx + 1).padStart(2, '0')}
+                            </span>
+                            <span className="text-[11px] text-[#64748B]">
+                              {topicLessons.length} {topicLessons.length === 1 ? 'lesson' : 'lessons'}
+                            </span>
+                          </div>
+                          <h4 className="text-sm font-bold text-white">
+                            {topic.title}
+                          </h4>
+                          {topic.description && (
+                            <p className="text-xs text-[#94A3B8] mt-1 leading-relaxed">
+                              {topic.description}
+                            </p>
+                          )}
+                        </div>
+                      );
+                    })}
+                  {topics.filter((t) => t.courseId === selectedCourseForSyllabus.id).length === 0 && (
+                    <div className="p-4 rounded-xl bg-white/[0.02] border border-white/6 text-xs text-[#94A3B8]">
+                      Foundational curriculum syllabus with adaptive Bayesian mastery testing.
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer Actions */}
+            <div className="p-5 border-t border-white/10 bg-[#050713] flex items-center justify-between gap-3">
+              <button
+                type="button"
+                onClick={() => setSelectedCourseForSyllabus(null)}
+                className="px-5 py-2.5 rounded-full border border-white/10 hover:bg-white/5 text-xs font-semibold text-[#94A3B8] hover:text-white transition cursor-pointer"
+              >
+                Close
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  const courseId = selectedCourseForSyllabus.id;
+                  setSelectedCourseForSyllabus(null);
+                  if (enrolledCourseIds.has(courseId)) {
+                    onNavigate('course_map', { courseId });
+                  } else {
+                    handleEnrollFromHome(courseId);
+                  }
+                }}
+                disabled={enrollingCourseId === selectedCourseForSyllabus.id}
+                className="px-6 py-2.5 rounded-full text-xs font-bold btn-primary-pill shadow-sm cursor-pointer disabled:opacity-50"
+              >
+                {enrollingCourseId === selectedCourseForSyllabus.id
+                  ? 'Enrolling...'
+                  : enrolledCourseIds.has(selectedCourseForSyllabus.id)
+                  ? 'Open Course Map'
+                  : 'Enroll in Course'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

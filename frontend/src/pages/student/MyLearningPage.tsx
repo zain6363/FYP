@@ -143,15 +143,15 @@ export const MyLearningPage: React.FC<MyLearningPageProps> = ({
             <p className="text-xs text-[#64748B] mt-1 max-w-sm mx-auto">
               {activeTab === 'completed'
                 ? 'Keep progressing through your active course units to reach final summative completion.'
-                : 'Browse our academic course catalog to self-enroll in a subject.'}
+                : 'Discover available courses on the home page to enroll in a subject.'}
             </p>
           </div>
           <button
             type="button"
-            onClick={() => onNavigate('catalog')}
+            onClick={() => onNavigate('landing')}
             className="px-5 py-2.5 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold text-xs transition cursor-pointer"
           >
-            Explore Course Catalog
+            Explore Courses on Home
           </button>
         </div>
       )}

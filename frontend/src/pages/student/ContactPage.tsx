@@ -111,7 +111,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
           <button
             type="button"
-            onClick={() => onNavigate('catalog')}
+            onClick={() => onNavigate('landing')}
             className="relative py-1 hover:text-white transition-colors cursor-pointer"
           >
             <span>Courses</span>
@@ -446,7 +446,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
         <div className="flex items-center gap-6">
           <button type="button" onClick={() => onNavigate('landing')} className="hover:text-white transition">Home</button>
-          <button type="button" onClick={() => onNavigate('catalog')} className="hover:text-white transition">Courses</button>
+          <button type="button" onClick={() => onNavigate('landing')} className="hover:text-white transition">Courses</button>
           <button type="button" onClick={() => onNavigate('about')} className="hover:text-white transition">About</button>
           <button type="button" onClick={() => onNavigate('contact')} className="text-white">Contact</button>
         </div>

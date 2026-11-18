@@ -182,6 +182,14 @@ export default function App() {
 
   // Student Navigation
   const handleStudentNavigate = (page: StudentNavigationPage, params?: Record<string, string>) => {
+    if (page === 'catalog' || page === 'course_details') {
+      setStudentPage('landing');
+      setTimeout(() => {
+        const el = document.getElementById('curriculum-grid');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      }, 200);
+      return;
+    }
     setStudentPage(page);
     if (params) {
       setStudentNavParams((prev) => ({ ...prev, ...params }));
@@ -863,12 +871,6 @@ export default function App() {
 
     if (studentPage === 'dashboard') {
       list.push({ label: 'Dashboard' });
-    } else if (studentPage === 'catalog') {
-      list.push({ label: 'Course Catalog' });
-    } else if (studentPage === 'course_details') {
-      const crs = courses.find((c) => c.id === studentNavParams.courseId);
-      list.push({ label: 'Course Catalog', page: 'catalog' });
-      list.push({ label: crs?.title || 'Course Details' });
     } else if (studentPage === 'my_learning') {
       list.push({ label: 'My Learning' });
     } else if (studentPage === 'course_map') {
@@ -913,9 +915,12 @@ export default function App() {
       return (
         <LandingHeroPage
           courses={courses}
+          topics={topics}
+          lessons={lessons}
           enrollments={enrollments}
           currentStudent={currentStudent}
           onNavigate={(page, params) => handleStudentNavigate(page, params)}
+          onEnroll={handleEnrollCourse}
           onSwitchToTeacher={() => {
             setPortalMode('teacher');
             refreshTeacherCourseData();
@@ -1063,29 +1068,6 @@ export default function App() {
             masteryStates={masteryStates}
             badges={badges}
             recentAttempts={attempts}
-            onNavigate={handleStudentNavigate}
-          />
-        )}
-
-        {/* STU-04: Course Catalog */}
-        {studentPage === 'catalog' && (
-          <CourseCatalogPage
-            courses={courses}
-            topics={topics}
-            enrollments={enrollments}
-            onNavigate={handleStudentNavigate}
-          />
-        )}
-
-        {/* STU-05: Course Details & Enrollment */}
-        {studentPage === 'course_details' && (
-          <CourseDetailsPage
-            courseId={studentNavParams.courseId || courses[0]?.id || ''}
-            courses={courses}
-            topics={topics}
-            lessons={lessons}
-            enrollments={enrollments}
-            onEnroll={handleEnrollCourse}
             onNavigate={handleStudentNavigate}
           />
         )}
