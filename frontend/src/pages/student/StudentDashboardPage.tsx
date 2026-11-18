@@ -17,6 +17,7 @@ import {
   Zap,
   Award,
   CheckCircle2,
+
   Compass,
   Sparkles,
   Layers,

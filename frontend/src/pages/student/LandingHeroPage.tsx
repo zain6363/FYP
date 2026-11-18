@@ -286,7 +286,7 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
 
           <button
             type="button"
-            onClick={scrollToCurriculum}
+            onClick={() => onNavigate('catalog')}
             className="relative py-1 hover:text-white transition-colors cursor-pointer"
           >
             <span>Courses</span>
@@ -360,9 +360,9 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
           {/* Quick Catalog Grid Shortcut */}
           <button
             type="button"
-            onClick={scrollToCurriculum}
+            onClick={() => onNavigate('catalog')}
             className="hidden sm:block p-2 text-white/60 hover:text-white transition cursor-pointer"
-            title="View Courses on Home"
+            title="Explore All Courses"
           >
             <Grid className="w-4 h-4" />
           </button>
@@ -398,7 +398,8 @@ export const LandingHeroPage: React.FC<LandingHeroPageProps> = ({
               <button
                 type="button"
                 onClick={() => {
-                  scrollToCurriculum();
+                  onNavigate('catalog');
+                  setMobileMenuOpen(false);
                 }}
                 className="text-left py-2 text-white hover:text-cyan-400 border-b border-white/5"
               >

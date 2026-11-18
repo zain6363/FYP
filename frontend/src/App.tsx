@@ -182,12 +182,12 @@ export default function App() {
 
   // Student Navigation
   const handleStudentNavigate = (page: StudentNavigationPage, params?: Record<string, string>) => {
-    if (page === 'catalog' || page === 'course_details') {
-      setStudentPage('landing');
-      setTimeout(() => {
-        const el = document.getElementById('curriculum-grid');
-        el?.scrollIntoView({ behavior: 'smooth' });
-      }, 200);
+    if (page === 'course_details') {
+      setStudentPage('catalog');
+      if (params) {
+        setStudentNavParams((prev) => ({ ...prev, ...params }));
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     setStudentPage(page);
@@ -929,6 +929,30 @@ export default function App() {
             setPortalMode('admin');
             refreshAdminData();
           }}
+        />
+      );
+    }
+
+    // Public Standalone Courses Catalog Page
+    if (studentPage === 'catalog') {
+      return (
+        <CourseCatalogPage
+          courses={courses}
+          topics={topics}
+          lessons={lessons}
+          enrollments={enrollments}
+          currentStudent={currentStudent}
+          onNavigate={(page, params) => handleStudentNavigate(page, params)}
+          onEnroll={handleEnrollCourse}
+          onSwitchToTeacher={() => {
+            setPortalMode('teacher');
+            refreshTeacherCourseData();
+          }}
+          onSwitchToAdmin={() => {
+            setPortalMode('admin');
+            refreshAdminData();
+          }}
+          initialSelectedCourseId={studentNavParams.courseId}
         />
       );
     }
